@@ -13,30 +13,45 @@ sed -nr 's/[\t]//g; /Keychord/, /\}\;/p'  $path_dwm |\
   -e 's/[[:blank:]]//g' \
   -e 's/[{|{{|}|}}"()]//g' \
   -e 's/^([12],0,|[12],)//g' -e 's/(XF86XK_|XK_|,|spawn|\.v=)//g' |\
-    sed -e 's/SHCMD/\t/g' \
+    sed -e 's/SHCMD/\t /g' \
       -e 's/MODKEY/⌘  + /g; s/ShiftMask/Shift + /g; s/Mod1Mask/Alt + /g; s/ControlMask/Ctrl + /g' \
       -e 's/\$BROWSER/'$BROWSER'/' \
       -e 's/st-e\|\<st\>/ /g' \
-      -e 's/toggle[sticky|fullscr|gaps|bar]/\t&/' \
+      -e 's/toggle[sticky|fullscr|gaps|bar|float]/\t &/' \
+      -e '/setmfact/s/\.f=//;s/\(setmfact\)\(.*\)/\t  \1 \2/' \
+      -e 's/shift[view|tag]\|inc[nmaster|rgaps]\|view[0-1]\|book[config|media|browser]\|tag\|focus[mon]\|killclient/\t &/g' \
       -e 's/0\(\w\)/ + \1/g' \
       -e 's/^Touchpad[Off|On].*//; /Touchpad/s/sync.*/ enable\/disable/' \
-      -e '/setmfact/s/\.f=//;s/\(setmfact\)\(.*\)/\t\1 \2/' \
-      -e 's/shift[view|tag]\|inc[nmaster|rgaps]\|view[0-1]\|book[config|media|browser]\|tag\|focus[mon]\|killclient/\t&/g' \
-      -e '/cmd/ s/dmenu\|term/\t&/g' \
-      -e '/bookman/s/\t//2'\
+      -e '/cmd/ s/dmenu\|term/\t &/g' \
+      -e '/LFUB/ s/LFUB/\t \L🗄️&/g' \
+      -e '/sudonmtui/ s/sudonmtui/setting WIFI (nmtui)/g' \
+      -e '/MyComputer/ s/ /\t \L🗄️&/g; s/ //' \
+      -e '/incnmaster\.i..1/ s/incnmaster\.i.+1/move window horizontal/; s/incnmaster\.i.-1/back window vertical/' \
+      -e '/bookman/s/\t //2'\
       -e '/MYTETRA/s/MYTETRA/\L&/'\
-      -e '/quit[0-1]/s/quit[0-1]/\t&/;s/quit1/reload/;s/quit0/logout/'\
-      -e 's/.layouts.0./[M] monocle/' \
-      -e 's/.layouts.1./[]= tile/' \
-      -e 's/.layouts.3./[\\]  dwindle/' \
-      -e 's/.layouts.6./|M| centeredmaster/' \
-      -e 's/.layouts.7./>M>	centeredfloatingmaster/' \
-      -e '/layout/s/setlayout/\t/g' \
+      -e '/mpcseek/ s/mpcseek0%/Return to start song/; s/mpcseek-10/Rewind song -10 sec/; s/mpcseek+10/Forward song +10 sec/'\
+      -e '/BROWSER/ s/BROWSER/browser default \U'$BROWSER'/' \
+      -e '/wt-w/s/wt-w/jw liblrary or wtlibrary (wt -w) /'\
+      -e '/wt-i/s/wt-i/si-Все писание вдохновленно (wt -i) /'\
+      -e '/quit[0-1]/s/quit[0-1]/\t &/;s/quit1/reload/;s/quit0/logout/'\
+      -e 's/.layouts.0./[]= tile layouts/' \
+      -e 's/.layouts.1./[M] monocle layouts/' \
+      -e 's/.layouts.3./[\\] dwindle layouts/' \
+      -e 's/.layouts.6./|M| centeredmaster layouts/' \
+      -e 's/.layouts.7./>M>	centeredfloatingmaster layouts/' \
+      -e 's/.layouts.8./[F] float layouts/' \
+      -e 's/.togglefloating.*0.*/ togglefloating layouts/' \
+      -e '/layout/s/setlayout/\t /g' \
       -e 's/togglescratch.*0/ scratch_Terminal/' \
       -e 's/togglescratch.*1/ scratch_Calculator/' \
       -e 's/togglescratch.*2/ scratch_ncmpcpp(music)/' \
       -e 's/togglescratch.*3/ scratch_cdown/' \
       -e 's/TAGKEYS.*\|STACKKEYS.*\|static.*//g; /^$/d' |\
-  rofi -dmenu
+  rofi -dmenu \
+        -theme-str 'window {width: 70%;}' \
+        -theme-str '* {text-color:            rgba ( 0, 0, 255, 100 % );}' \
+        -theme-str '* {background:            rgba ( 0, 0, 0, 90 % );}' \
+        -p '   DWM shortcuts '
+
 
 

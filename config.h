@@ -60,7 +60,7 @@ static Sp scratchpads[] = {
 	{"spcdown",     spcmd4},
 };
 
-/* tagging               */
+/* tagging               */
 static const char *tags[] = {
 	"1 ", // ws 0
 	"2 ", // ws 1
@@ -71,7 +71,7 @@ static const char *tags[] = {
 	"6 ", // ws 6
 	"7 ", // ws 7
 	"8 ", // ws 8
-	"9 "  // ws 9
+	"9 "  // ws 9
 };
 
 
@@ -114,6 +114,26 @@ static const Rule rules[] = {
 		0,							    // noswallow
 		-1									// monitor
 	},
+		{
+		"WebCord",		  		// class
+		"webcord",               // instance
+		NULL,		 			// title
+		1 << 8,						  // tag mask
+		0,							    // isfloating
+		0,							    // isterminal
+		0,							    // noswallow
+		-1									// monitor
+	},
+		{
+		"Spotify",		  		// class
+		"spotify",               // instance
+		"Spotify",		 			// title
+		1 << 9,						  // tag mask
+		0,							    // isfloating
+		0,							    // isterminal
+		0,							    // noswallow
+		-1									// monitor
+	},
 	{ "zoom",     "zoom",       NULL,       1 << 7,            0,           1,         0,        -1 },
 	{ "mytetra",     "mytetra",       NULL,       1 << 8,            0,           1,         0,        -1 },
 	{ "wtlibrary.exe",     NULL,       NULL,       1 << 3,            0,           1,         0,        -1 },
@@ -139,10 +159,10 @@ static const Layout layouts[] = {
  	{ "[]=",	tile },			/* Master on left, slaves on right */
  	{ "[M]",	monocle },		/* All windows on top of eachother */
 	{ "TTT",	NULL },		/* Master on top, slaves on bottom [bstack] */
-	{ "[\\]",	dwindle },		/* Decreasing in size right and leftward [dwindle] */
+	{ "[\\]",	NULL },		/* Decreasing in size right and leftward [dwindle] */
 	{ "H[]",	NULL },			/* Master on left, slaves in monocle-like mode on right [deck] */
 	{ "[@]",	NULL },		/* Fibonacci spiral [spiral] */
-	{ "|M|",	centeredmaster },		/* Master in middle, slaves on sides */
+	{ "[CM]",	centeredmaster },		/* Master in middle, slaves on sides */
 	{ "[CF]",	centeredfloatingmaster },	/* Same but master floats */
 	{ "[F]",	NULL },			/* no layout function means floating behavior */
 	{ NULL,		NULL },
@@ -206,12 +226,9 @@ static const char *dmenucmd[] = {
 static const char *termcmd[]  = { "st", NULL };
 static const char *LFUB[]  = { "st", "-T", "🗄️lfub", "-e", "lfub", NULL };
 
-static const char *bookmedia[] = { 
-	"bookmenu", "-p", ">>", "-l", "5", "-fn", "jetbrains mono-10", "-s", ":", "-b", "/home/kalex/.config/bookmenu/media", "-co", "open", NULL };
-static const char *bookbrowser[] = { 
-	"bookmenu", "-p", ">>", "-l", "5", "-fn", "jetbrains mono-10", "-s", ":", "-b", "/home/kalex/.config/bookmenu/browser", "-co", "opera", NULL };
-static const char *bookconfigs[] = { 
-	"bookmenu", "-p", ">>", "-l", "5",  "-fn", "jetbrains mono-10", "-s", ":", "-b", "/home/kalex/.config/bookmenu/configs", "-co", EDIT, NULL};
+static const char *bookmedia[] = { "bookmenu", "-p", ">>", "-l", "15", "-fn", "Menlo Regular-16", "-s", ":", "-b", "/home/kalex/.config/bookmenu/media", "-co", "open", NULL };
+static const char *bookbrowser[] = { "bookmenu", "-p", ">>", "-l", "5", "-fn", "jetbrains mono-10", "-s", ":", "-b", "/home/kalex/.config/bookmenu/browser", "-co", "opera", NULL };
+static const char *bookconfigs[] = { "bookmenu", "-p", ">>", "-l", "5",  "-fn", "jetbrains mono-10", "-s", ":", "-b", "/home/kalex/.config/bookmenu/configs", "-co", EDIT, NULL};
 
 //
 //
@@ -248,13 +265,15 @@ static Keychord keychords[] = {
 	STACKKEYS( MODKEY|ShiftMask,											push)
 
 	{1, {{MODKEY,							XK_t}},		setlayout,		{.v = &layouts[0]} }, // tile
-	{1, {{MODKEY,							XK_i}},		setlayout,		{.v = &layouts[1]} }, // centeredmaster
-	{1, {{MODKEY|ShiftMask,		XK_t}},		setlayout,		{.v = &layouts[6]} }, // monocle
-	{1, {{MODKEY|ShiftMask,		XK_y}},		setlayout,		{.v = &layouts[3]} }, // dwindle
-	{1, {{MODKEY|ShiftMask,		XK_i}},		setlayout,		{.v = &layouts[7]} }, // centeredfloatingmaster
+	{1, {{MODKEY,							XK_i}},		setlayout,		{.v = &layouts[1]} }, //  monocle
 	// {1, {{MODKEY|ShiftMask,		XK_t}},		setlayout,		{.v = &layouts[2]} },
+	// {1, {{MODKEY|ShiftMask,		XK_d}},		setlayout,		{.v = &layouts[3]} }, // dwindle
 	// {1, {{MODKEY,							XK_u}},		setlayout,		{.v = &layouts[4]} },
 	// {1, {{MODKEY,							XK_y}},		setlayout,		{.v = &layouts[5]} },
+	{1, {{MODKEY|ShiftMask,		XK_t}},		setlayout,		{.v = &layouts[6]} }, // centeredmaster
+	{1, {{MODKEY|ShiftMask,		XK_i}},		setlayout,		{.v = &layouts[7]} }, // centeredfloatingmaster
+	{1, {{MODKEY|ShiftMask,		XK_space}},	togglefloating,	{0} },
+	{1, {{MODKEY|ShiftMask,		XK_f}},		setlayout,	{.v = &layouts[8]} },
 
 	TAGKEYS(			XK_1,		0)
 	TAGKEYS(			XK_2,		1)
@@ -273,7 +292,7 @@ static Keychord keychords[] = {
 
     // BROWSER ; Browser bookmarks and history
 	{2, {{MODKEY,		XK_w},		{0, XK_a}},							spawn,		SHCMD("dm-bookman") },
-	{2, {{MODKEY,		XK_w},		{0, XK_e}},							spawn,	{.v = (const char*[]){ "copylinkBrowser", NULL } } },
+	{2, {{MODKEY,		XK_w},		{0, XK_e}},							spawn,	    SHCMD("copylinkBrowser")},
 	{2, {{MODKEY,		XK_w},		{0, XK_n}},							spawn,		SHCMD("st -e sudo nmtui") },
 	{2, {{MODKEY,		XK_w},		{0, XK_w}},							spawn,		SHCMD(BROWSER) },
 		// Translate online;offline
@@ -309,7 +328,7 @@ static Keychord keychords[] = {
 	{2, {{Mod1Mask, XK_p},							{0, XK_h}},						spawn,  SHCMD("apps_man")},
 	{2, {{Mod1Mask, XK_p},							{0, XK_k}},						spawn,  SHCMD("dm-kill")},
 	{2, {{Mod1Mask, XK_p},							{0, XK_r}},						spawn,  SHCMD("dm-radio")},
-	{2, {{Mod1Mask, XK_p},							{0, XK_s}},						spawn,  SHCMD("passmenu")},
+	{2, {{Mod1Mask, XK_p},							{0, XK_s}},						spawn,  SHCMD("passmenu.sh")},
 	{2, {{Mod1Mask, XK_p},							{0, XK_u}},						spawn,  SHCMD(TUTOR)},
 	{2, {{Mod1Mask, XK_p},							{0, XK_y}},						spawn,  SHCMD("st -e sb-popupgrade")},
 	{2, {{Mod1Mask, XK_p},							{0, XK_p}},						spawn,  SHCMD("sh ~/Documents/MYSECRETDOC/fixcopiedPass.sh")},
@@ -355,7 +374,6 @@ static Keychord keychords[] = {
 
 	{1, {{MODKEY,			XK_s}},		togglesticky,	{0} },
 	{1, {{MODKEY,			XK_f}},		togglefullscr,	{0} },
-	{1, {{MODKEY|ShiftMask,		XK_f}},		setlayout,	{.v = &layouts[8]} },
 
 // Переключение между 2-мя последними вкладками
 	{1, {{MODKEY,							XK_Tab}},		view,		{0} },
@@ -405,6 +423,7 @@ static Keychord keychords[] = {
 	{1, {{MODKEY,							XK_Insert}},	spawn,		SHCMD("notify-send \"📋 Clipboard contents:\" \"$(xclip -o -selection clipboard)\"") },
 
 	{1, {{MODKEY,			XK_F1}},		spawn,		SHCMD("groff -mom /usr/local/share/dwm/larbs.mom -Tpdf | zathura -") },
+	{1, {{Mod1Mask,			XK_F1}},		spawn,		SHCMD("/home/$USER/.local/src/dwm/dwm-shortcuts") },
 	{1, {{MODKEY,			XK_F2}},		spawn,		SHCMD("tutorialvids") },
 	{1, {{MODKEY,			XK_F3}},		spawn,		SHCMD("displayselect") },
 	{1, {{MODKEY,			XK_F4}},		spawn,		SHCMD("st -e pulsemixer; kill -44 $(pidof dwmblocks)") },
@@ -418,7 +437,6 @@ static Keychord keychords[] = {
 	{1, {{Mod1Mask,   XK_F12}},	  spawn,		SHCMD("remaps") },
 	//{1, {{MODKEY,			XK_F12}},		xrdb,		{.v = NULL } },
 	//{ MODKEY,			XK_space,	zoom,		{0} },
-	{1, {{MODKEY|ShiftMask,		XK_space}},	togglefloating,	{0} },
 
 	{1, {{0,									XK_Print}},				spawn,		SHCMD("maimpick screen") },
 	{1, {{ShiftMask,					XK_Print}},				spawn,		SHCMD("maimpick choice") },
@@ -445,7 +463,7 @@ static Keychord keychords[] = {
 	{1, {{0, XF86XK_ScreenSaver}},			spawn,		SHCMD("slock & xset dpms force off; mpc pause; pauseallmpv") },
 	{1, {{0, XF86XK_TaskPane}},					spawn,		SHCMD("st -e htop") },
 	{1, {{0, XF86XK_Mail}},							spawn,		SHCMD("st -e neomutt ; pkill -RTMIN+12 dwmblocks") },
-	{1, {{0, XF86XK_MyComputer}},				spawn,		SHCMD("st -e lf /") },
+	{1, {{0, XF86XK_MyComputer}},				spawn,		SHCMD("st -e lfub /") },
 /*{ 0, XF86XK_Battery,					spawn,		SHCMD("") }, */
 	{1, {{0, XF86XK_Launch1}},					spawn,		SHCMD("xset dpms force off") },
 	{1, {{0, XF86XK_TouchpadToggle}},		spawn,		SHCMD("(synclient | grep 'touchpadoff.*1' && synclient TouchpadOff=0) || synclient TouchpadOff=1") },
